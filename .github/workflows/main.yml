@@ -1,0 +1,16 @@
+name: Delpoy first html file to EC2
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Show all files
+      run: ls -al
