@@ -36,4 +36,6 @@ jobs:
           key: ${{ secrets.EC2_SSH }}
           port: 22
           source: "index.html"
-          target: "/var/www/html"
+          target: "/home/ubuntu"
+          script: |
+            cp "/home/ubuntu/index.html" "/var/www/html/index.html"
