@@ -35,8 +35,16 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH }}
           port: 22
-          source: "index.html"
+          source: ./
           target: "/home/ubuntu"
+
+      - name: Copy to nginx
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH }}
+          port: 22
           script: |
             sudo cp /home/ubuntu/index.html /var/www/html/index.html
             sudo systemctl restart nginx
