@@ -20,10 +20,20 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{secrets.EC2_SSH}}
+          key: ${{ secrets.EC2_SSH }}
           port: 22
           script: |
             whoami
             pwd
             mkdir noizy
             ls -al
+
+      - name: Upload files to EC2
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH }}
+          port: 22
+          source: "index.html"
+          target: "/var/www/html"
