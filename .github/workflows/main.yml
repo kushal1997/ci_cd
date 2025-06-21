@@ -39,7 +39,7 @@ jobs:
           target: "/home/ubuntu"
 
       - name: Copy to nginx
-        uses: appleboy/scp-action@v1
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
