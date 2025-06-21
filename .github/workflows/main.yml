@@ -38,4 +38,6 @@ jobs:
           source: "index.html"
           target: "/home/ubuntu"
           script: |
-            cp "/home/ubuntu/index.html" "/var/www/html/index.html"
+            sudo cp /home/ubuntu/index.html /var/www/html/index.html
+            sudo systemctl restart nginx
+            sudo systemctl status nginx
