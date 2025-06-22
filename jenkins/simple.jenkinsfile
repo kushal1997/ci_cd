@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+
+    environment {
+        GITREPO = 'https://github.com/kushal1997/ci_cd.git'
+        SSH_CRED = 'kushal'
+        EC2_USERNAME = 'ubuntu'
+        EC2_IP = "54.203.104.82"
+    }
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+
+        stage("Code Checkout") {
+            steps {
+                git branch: 'master', url: "${env.GITREPO}"
+            }
+        }
+
+        stage("Run Random Commands") {
+            steps {
+                sh '''
+                    ls
+                    pwd
+                '''
+            }
+        }
+
+        stage("Copy to EC2") {
+            steps {
+                sshagent(credentials: [env.SSH_CRED]) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no -r * ${EC2_USERNAME}@${EC2_IP}:/home/ubuntu/
+                    """
+                }
+            }
+        }
+
+        stage("Deploy to nginx") {
+            steps {
+                sshagent(credentials: [env.SSH_CRED]) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${EC2_USERNAME}@${EC2_IP} '
+                            sudo cp /home/ubuntu/index.html /var/www/html/
+                        '
+                    """
+                }
+            }
+        }
+    }
+}
