@@ -5,28 +5,32 @@ pipeline {
         GITREPO = 'https://github.com/kushal1997/ci_cd.git'
         SSH_CRED = 'kushal'
         EC2_USERNAME = 'ubuntu'
-        EC2_IP = "54.203.104.82"
+        EC2_IP = "52.12.183.12"
     }
 
     stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-            }
-        }
+        stage("parallel-build") {
+            parallel {
+                stage('Hello') {
+                    steps {
+                        echo 'Hello World'
+                    }
+                }
 
-        stage("Code Checkout") {
-            steps {
-                git branch: 'master', url: "${env.GITREPO}"
-            }
-        }
+                stage("Code Checkout") {
+                    steps {
+                        git branch: 'master', url: "${env.GITREPO}"
+                    }
+                }
 
-        stage("Run Random Commands") {
-            steps {
-                sh '''
-                    ls
-                    pwd
-                '''
+                stage("Run Random Commands") {
+                    steps {
+                        sh '''
+                            ls
+                            pwd
+                        '''
+                    }
+                }
             }
         }
 
@@ -44,12 +48,11 @@ pipeline {
             steps {
                 sshagent(credentials: [env.SSH_CRED]) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${EC2_USERNAME}@${EC2_IP} '
-                            sudo cp /home/ubuntu/index.html /var/www/html/
-                        '
+                        ssh -o StrictHostKeyChecking=no ${EC2_USERNAME}@${EC2_IP} "sudo cp /home/ubuntu/index.html /var/www/html/"
                     """
                 }
             }
         }
     }
+
 }
